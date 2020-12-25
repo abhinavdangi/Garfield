@@ -1,5 +1,6 @@
 package com.prozacto.Garfield.service.impl;
 
+import com.prozacto.Garfield.domain.UserRegistration;
 import com.prozacto.Garfield.domain.dto.UserProfileDto;
 import com.prozacto.Garfield.exception.AuthenticationException;
 import com.prozacto.Garfield.exception.UserServiceException;
@@ -14,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.security.spec.InvalidKeySpecException;
 import java.util.Base64;
 
 @Service("authenticationService")
@@ -35,18 +35,13 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     public UserProfileDto authenticate(String userName, String userPassword)
-            throws AuthenticationException {
+            throws AuthenticationException, UserServiceException {
         UserProfileDto userProfileDto = new UserProfileDto();
         UserProfile userProfile = userProfileRepository.getUserProfile(userName);
 
         String secureUserPassword;
-        try {
-            secureUserPassword = authenticationUtil.
-                    generateSecurePassword(userPassword, userProfile.getSalt());
-        } catch (InvalidKeySpecException ex) {
-            LOG.error(ex.getMessage());
-            throw new AuthenticationException(ex.getLocalizedMessage());
-        }
+        secureUserPassword = authenticationUtil.
+                generateSecurePassword(userPassword, userProfile.getSalt());
 
         if (secureUserPassword != null &&
             secureUserPassword.equalsIgnoreCase(userProfile.getUserPassword()) &&
@@ -60,26 +55,23 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     @Override
-    public void resetSecurityCredentials(String password, UserProfileDto userProfileDto)
+    public UserProfileDto resetSecurityCredentials(String password, UserProfileDto userProfileDto)
             throws UserServiceException {
         // Generate salt
         String salt = authenticationUtil.generateSalt(30);
-
         // Generate secure user password
-        String secureUserPassword;
-        try {
-            secureUserPassword = authenticationUtil.generateSecurePassword(password, salt);
-        } catch (InvalidKeySpecException ex) {
-            LOG.error(ex.getMessage());
-            throw new UserServiceException(ex.getLocalizedMessage());
-        }
+        String secureUserPassword = authenticationUtil.generateSecurePassword(password, salt);
         //update salt and user password in database
         userProfileRepository.setSalt(salt, userProfileDto.getUserName());
         userProfileRepository.setUserPassword(secureUserPassword, userProfileDto.getUserName());
+        userProfileDto.setSalt(salt);
+        userProfileDto.setUserPassword(secureUserPassword);
+        return userProfileDto;
     }
 
     @Override
-    public String issueSecureToken(UserProfileDto userProfileDto) throws AuthenticationException {
+    public String issueSecureToken(UserProfileDto userProfileDto)
+            throws UserServiceException {
         String returnToken;
 
         // Get salt but only part of it
@@ -88,13 +80,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         byte[] encryptedAccessToken;
 
-        try {
-            encryptedAccessToken =
-                    authenticationUtil.encrypt(userProfileDto.getUserPassword(), accessTokenMaterial);
-        } catch (InvalidKeySpecException ex) {
-            LOG.error(ex.getMessage());
-            throw new AuthenticationException("Failed to issue secure access token");
-        }
+        encryptedAccessToken = authenticationUtil.encrypt(userProfileDto.getUserPassword(), accessTokenMaterial);
 
         String encryptedAccessTokenBase64Encoded =
                 Base64.getEncoder().encodeToString(encryptedAccessToken);
@@ -109,7 +95,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         return returnToken;
     }
 
-    public Boolean checkToken(String userName, String token) throws InvalidKeySpecException {
+    @Override
+    public Boolean checkToken(String userName, String token) throws UserServiceException {
         UserProfile userProfile = userProfileRepository.getUserProfile(userName);
         String accessTokenMaterial = userName + userProfile.getSalt();
         byte[] encryptedAccessToken =
@@ -118,6 +105,20 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 Base64.getEncoder().encodeToString(encryptedAccessToken);
 
         return encryptedAccessTokenBase64Encoded.equals(userProfile.getToken() + token);
+    }
+
+    @Override
+    public void register(UserRegistration userRegistration) throws UserServiceException {
+        String salt = authenticationUtil.generateSalt(30);
+        String secureUserPassword;
+        secureUserPassword = authenticationUtil.generateSecurePassword(userRegistration.getUserPassword(), salt);
+        //update salt and user password in database
+        userProfileRepository.insert(userRegistration.getFirstName(),
+                                     userRegistration.getLastName(),
+                                     salt,
+                                     secureUserPassword,
+                                     userRegistration.getUserName());
+
     }
 
 }

@@ -2,6 +2,7 @@ package com.prozacto.Garfield.controller;
 
 import com.prozacto.Garfield.domain.AuthenticationDetails;
 import com.prozacto.Garfield.domain.LoginCredentials;
+import com.prozacto.Garfield.domain.UserRegistration;
 import com.prozacto.Garfield.domain.dto.UserProfileDto;
 import com.prozacto.Garfield.exception.AuthenticationException;
 import com.prozacto.Garfield.exception.UserServiceException;
@@ -10,11 +11,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
+@RequestMapping("/auth")
 public class AuthenticationController {
 
     private static Logger LOG = LoggerFactory.getLogger(AuthenticationController.class);
@@ -27,22 +33,25 @@ public class AuthenticationController {
         this.authenticationService = authenticationService;
     }
 
-    @GetMapping("/login")
+    @PostMapping("/login")
     @ResponseBody
-    public AuthenticationDetails userLogin(LoginCredentials loginCredentials)
+    public ResponseEntity<AuthenticationDetails> userLogin(@RequestBody final LoginCredentials loginCredentials)
             throws AuthenticationException, UserServiceException {
         UserProfileDto userProfile;
-        try {
-            userProfile = authenticationService.authenticate(
-                    loginCredentials.getUserName(),
-                    loginCredentials.getUserPassword());
-        } catch (AuthenticationException ex) {
-            LOG.error(ex.getMessage());
-            return new AuthenticationDetails();
-        }
-        authenticationService.resetSecurityCredentials(loginCredentials.getUserPassword(),
-                                                       userProfile);
+        userProfile = authenticationService.authenticate(loginCredentials.getUserName(),
+                                                         loginCredentials.getUserPassword());
+        userProfile = authenticationService.resetSecurityCredentials(
+                loginCredentials.getUserPassword(), userProfile);
         String secureUserToken = authenticationService.issueSecureToken(userProfile);
-        return new AuthenticationDetails(secureUserToken, userProfile.getUserName());
+        return new ResponseEntity<>(new AuthenticationDetails(secureUserToken, userProfile.getUserName()),HttpStatus.OK);
     }
+
+    @PostMapping("/register")
+    @ResponseBody
+    public ResponseEntity<String> register(@RequestBody final UserRegistration userRegistration)
+            throws UserServiceException {
+        authenticationService.register(userRegistration);
+        return new ResponseEntity<>("Successful", HttpStatus.OK);
+    }
+
 }

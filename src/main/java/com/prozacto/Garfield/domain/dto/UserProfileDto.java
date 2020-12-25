@@ -15,7 +15,6 @@ public class UserProfileDto implements Serializable {
     private long id;
     private String firstName;
     private String lastName;
-    private String fullName;
     private String salt;
     private String token;
     private String userPassword;
