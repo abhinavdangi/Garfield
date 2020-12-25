@@ -103,9 +103,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             throw new AuthenticationException(userName + " has not registered. Please register!");
         }
         Long timeDifference = System.currentTimeMillis() - Long.valueOf(userProfile.getCreatedOn());
-        LOG.info(timeDifference.toString());
         if (timeDifference > TOKEN_ALIVE_TIME_IN_MIN * 1000 * 60) {
-            throw new AuthenticationException(userName + "has been idle for more than "
+            throw new AuthenticationException(userName + " has been idle for more than "
                                               + TOKEN_ALIVE_TIME_IN_MIN + " minutes. "
                                               + "Please login and recreate the token.");
         }
