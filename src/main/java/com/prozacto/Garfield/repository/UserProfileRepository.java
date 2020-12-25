@@ -35,13 +35,15 @@ public interface UserProfileRepository extends JpaRepository<UserProfile, Long>,
     @Transactional
     @Modifying
     @Query(nativeQuery = true, value = "INSERT INTO user_profile "
-                                       + "(first_name, last_name, salt, user_password, user_name)"
-                                       + " VALUES ( :firstName, :lastName, :salt, :userPassword, :userName)")
+                                       + "(first_name, last_name, salt, user_password, user_name, role, created_on)"
+                                       + " VALUES ( :firstName, :lastName, :salt, :userPassword, :userName, :role, :createdOn)")
     void insert(@Param("firstName") String firstName,
                 @Param("lastName") String lastName,
                 @Param("salt") String salt,
                 @Param("userPassword") String userPassword,
-                @Param("userName") String userName
+                @Param("userName") String userName,
+                @Param("role") String role,
+                @Param("createdOn") String createdOn
                 );
 }
 

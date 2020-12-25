@@ -43,4 +43,10 @@ public class UserProfile implements Serializable {
     @Column(name = "user_name")
     private String userName;
 
+    @Column(name = "role")
+    private String role;
+
+    @Column(name = "created_on")
+    private String createdOn;
+
 }

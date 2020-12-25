@@ -39,6 +39,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         UserProfileDto userProfileDto = new UserProfileDto();
         UserProfile userProfile = userProfileRepository.getUserProfile(userName);
 
+        if(userProfile == null || userProfile.getUserName() == null){
+            throw new AuthenticationException(userName + " has not registered. Please register!");
+        }
         String secureUserPassword;
         secureUserPassword = authenticationUtil.
                 generateSecurePassword(userPassword, userProfile.getSalt());
@@ -117,8 +120,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                                      userRegistration.getLastName(),
                                      salt,
                                      secureUserPassword,
-                                     userRegistration.getUserName());
-
+                                     userRegistration.getUserName(),
+                                     userRegistration.getRole().name().toUpperCase(),
+                                     String.valueOf(System.currentTimeMillis()));
     }
 
 }
