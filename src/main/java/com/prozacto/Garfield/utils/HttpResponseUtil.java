@@ -27,6 +27,8 @@ public final class HttpResponseUtil {
             throws IOException {
         response.setStatus(httpResponse.getHttpStatus().value());
         response.getWriter().println(httpResponse.getMessage());
+        LOG.info(String.valueOf(httpResponse.getHttpStatus().value()));
+        LOG.info(String.valueOf(httpResponse.getMessage()));
         response.getWriter().flush();
         response.getWriter().close();
     }

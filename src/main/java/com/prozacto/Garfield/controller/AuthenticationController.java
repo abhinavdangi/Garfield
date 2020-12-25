@@ -14,10 +14,14 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import java.security.spec.InvalidKeySpecException;
 
 @Controller
 @RequestMapping("/auth")
@@ -51,6 +55,15 @@ public class AuthenticationController {
     public ResponseEntity<String> register(@RequestBody final UserRegistration userRegistration)
             throws UserServiceException {
         authenticationService.register(userRegistration);
+        return new ResponseEntity<>("Successful", HttpStatus.OK);
+    }
+
+    @GetMapping("/checkToken")
+    @ResponseBody
+    public ResponseEntity<String> checkAuth(@RequestParam(value = "userName") String userName,
+                                            @RequestParam(value = "token") String token)
+            throws UserServiceException, AuthenticationException {
+        LOG.info(authenticationService.checkToken(userName, token).toString());
         return new ResponseEntity<>("Successful", HttpStatus.OK);
     }
 }
