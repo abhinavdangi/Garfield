@@ -15,7 +15,7 @@ public interface PatientService {
             throws IOException, FileIOException;
 
     void putPatientData(Long patientId, MultipartFile zipFile, HttpServletResponse response)
-            throws IOException;
+            throws IOException, FileIOException;
 
     void deletePatientReport(Long patientId) throws IOException;
 }

@@ -49,10 +49,10 @@ public class LocalLocationServiceImpl implements LocationService {
     }
 
     @Override
-    public void putData(String latestPath, MultipartFile multipartFile) throws IOException {
+    public void putData(String latestPath, File file) throws IOException {
         LOG.info(latestPath);
         LOG.info(String.valueOf(new File(latestPath).getParentFile().mkdirs()));
-        FileUtils.writeByteArrayToFile(new File(latestPath), multipartFile.getBytes());
+        FileUtils.copyFile(file, new File(latestPath));
     }
 
     @Override

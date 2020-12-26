@@ -55,7 +55,8 @@ public class PatientController {
                                     @PathVariable(value = "patient-id") String patientId,
                                     @RequestParam(value = "file") MultipartFile zipFile,
                                     HttpServletResponse response)
-            throws UserServiceException, AuthenticationException, ForbiddenException, IOException {
+            throws UserServiceException, AuthenticationException, ForbiddenException, IOException,
+            FileIOException {
         authenticationService.checkToken(userName, token);
         if (!checkRole(patientId)) {
             throw new ForbiddenException("You are not authorized to perform this operation.");
@@ -69,7 +70,8 @@ public class PatientController {
                                     @PathVariable(value = "patient-id") String patientId,
                                     @RequestParam(value = "file") MultipartFile zipFile,
                                     HttpServletResponse response)
-            throws UserServiceException, AuthenticationException, ForbiddenException, IOException {
+            throws UserServiceException, AuthenticationException, ForbiddenException, IOException,
+            FileIOException {
         authenticationService.checkToken(userName, token);
         if (!checkRole(patientId)) {
             throw new ForbiddenException("You are not authorized to perform this operation.");
