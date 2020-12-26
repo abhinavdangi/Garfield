@@ -1,3 +1,4 @@
 1. Insert to auth table is using native query. For a new column addition, code in 2 places has to be changed:
     UserProfile model class and Insert query
 2. Approval flow not in place for registering as a doctor.
+3. User Table to be separate from Auth Table.
