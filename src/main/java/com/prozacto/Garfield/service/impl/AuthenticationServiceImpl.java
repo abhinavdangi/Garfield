@@ -117,7 +117,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         if (encryptedAccessTokenBase64Encoded.equals(userProfile.getToken() + token)) {
             return true;
         } else {
-            throw new AuthenticationException("Not authorized");
+            throw new AuthenticationException("Please login again and submit correct token.");
         }
     }
 
