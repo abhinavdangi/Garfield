@@ -1,6 +1,6 @@
 package com.prozacto.Garfield.controller;
 
-import com.prozacto.Garfield.domain.dto.AppointmentDto;
+import com.prozacto.Garfield.domain.HttpResponse;
 import com.prozacto.Garfield.domain.request.AppointmentRequest;
 import com.prozacto.Garfield.exception.AppointmentException;
 import com.prozacto.Garfield.exception.AuthenticationException;
@@ -8,7 +8,10 @@ import com.prozacto.Garfield.exception.ForbiddenException;
 import com.prozacto.Garfield.exception.UserServiceException;
 import com.prozacto.Garfield.service.AppointmentService;
 import com.prozacto.Garfield.service.AuthenticationService;
+import com.prozacto.Garfield.utils.HttpResponseUtil;
+import com.prozacto.Garfield.utils.MapperUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,7 +22,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
+import java.io.IOException;
 import javax.servlet.http.HttpServletResponse;
 
 @RestController
@@ -37,28 +40,32 @@ public class AppointmentController {
     }
 
     @GetMapping(value = "/{appointment-id}")
-    public AppointmentDto getAppointment(@RequestHeader(value = "user-name") String userName,
+    public void getAppointment(@RequestHeader(value = "user-name") String userName,
                                          @RequestHeader(value = "token") String token,
                                          @PathVariable("appointment-id") String appointmentId,
                                          HttpServletResponse response)
-            throws UserServiceException, AuthenticationException, ForbiddenException {
+            throws UserServiceException, AuthenticationException, ForbiddenException, IOException {
         authenticationService.checkToken(userName, token);
         if (!checkRole(userName)) {
             throw new ForbiddenException("You are not authorized to perform this operation.");
         }
-        return appointmentService.getAppointment(appointmentId);
+        HttpResponseUtil.returnResponse(response, new HttpResponse(
+                HttpStatus.OK,
+                MapperUtil.getObjectMapper().writeValueAsString(appointmentService.getAppointment(appointmentId))));
     }
 
     @GetMapping
-    public List<AppointmentDto> getAppointments(@RequestHeader(value = "user-name") String userName,
+    public void getAppointments(@RequestHeader(value = "user-name") String userName,
                                                @RequestHeader(value = "token") String token,
                                                HttpServletResponse response)
-            throws UserServiceException, AuthenticationException, ForbiddenException {
+            throws UserServiceException, AuthenticationException, ForbiddenException, IOException {
         authenticationService.checkToken(userName, token);
         if (!checkRole(userName)) {
             throw new ForbiddenException("You are not authorized to perform this operation.");
         }
-        return appointmentService.getAppointments();
+        HttpResponseUtil.returnResponse(response, new HttpResponse(
+                HttpStatus.OK,
+                MapperUtil.getObjectMapper().writeValueAsString(appointmentService.getAppointments())));
     }
 
     @PostMapping
@@ -67,12 +74,13 @@ public class AppointmentController {
                                   @RequestBody AppointmentRequest appointment,
                                   HttpServletResponse response)
             throws UserServiceException, AuthenticationException, ForbiddenException,
-            AppointmentException {
+            AppointmentException, IOException {
         authenticationService.checkToken(userName, token);
         if (!checkRole(userName)) {
             throw new ForbiddenException("You are not authorized to perform this operation.");
         }
         appointmentService.requestAppointment(appointment);
+        HttpResponseUtil.returnResponse(response, new HttpResponse(HttpStatus.OK, "Successful"));
     }
 
     @PutMapping(value = "/{appointment-id}")
@@ -81,12 +89,13 @@ public class AppointmentController {
                                   @PathVariable(value = "appointment-id") String appointmentId,
                                   @RequestParam(value = "status") String status,
                                   HttpServletResponse response)
-            throws UserServiceException, AuthenticationException, ForbiddenException {
+            throws UserServiceException, AuthenticationException, ForbiddenException, IOException {
         authenticationService.checkToken(userName, token);
         if (!checkRole(userName)) {
             throw new ForbiddenException("You are not authorized to perform this operation.");
         }
         appointmentService.updateAppointment(appointmentId, status);
+        HttpResponseUtil.returnResponse(response, new HttpResponse(HttpStatus.OK, "Successful"));
     }
 
     @PutMapping(value = "/{appointment-id}/approve")
@@ -96,12 +105,13 @@ public class AppointmentController {
                                    @RequestParam(value = "appointment-time") String appointmentTime,
                                    @RequestParam(value = "appointment-duration") String appointmentDuration,
                                    HttpServletResponse response)
-            throws UserServiceException, AuthenticationException, ForbiddenException {
+            throws UserServiceException, AuthenticationException, ForbiddenException, IOException {
         authenticationService.checkToken(userName, token);
         if (!checkRole(userName)) {
             throw new ForbiddenException("You are not authorized to perform this operation.");
         }
         appointmentService.approveAppointment(appointmentId, appointmentTime, appointmentDuration);
+        HttpResponseUtil.returnResponse(response, new HttpResponse(HttpStatus.OK, "Successful"));
     }
 
     private boolean checkRole(String userName) {

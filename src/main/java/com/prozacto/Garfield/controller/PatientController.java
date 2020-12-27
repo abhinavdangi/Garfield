@@ -1,12 +1,15 @@
 package com.prozacto.Garfield.controller;
 
+import com.prozacto.Garfield.domain.HttpResponse;
 import com.prozacto.Garfield.exception.AuthenticationException;
 import com.prozacto.Garfield.exception.FileIOException;
 import com.prozacto.Garfield.exception.ForbiddenException;
 import com.prozacto.Garfield.exception.UserServiceException;
 import com.prozacto.Garfield.service.AuthenticationService;
 import com.prozacto.Garfield.service.PatientService;
+import com.prozacto.Garfield.utils.HttpResponseUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -62,6 +65,9 @@ public class PatientController {
             throw new ForbiddenException("You are not authorized to perform this operation.");
         }
         patientService.putPatientData(Long.valueOf(patientId), zipFile, response);
+        HttpResponseUtil
+                .returnResponse(response, new HttpResponse(HttpStatus.OK, "Successful"));
+
     }
 
     @PutMapping
@@ -77,6 +83,8 @@ public class PatientController {
             throw new ForbiddenException("You are not authorized to perform this operation.");
         }
         patientService.putPatientData(Long.valueOf(patientId), zipFile, response);
+        HttpResponseUtil.returnResponse(response, new HttpResponse(HttpStatus.OK, "Successful"));
+
     }
 
     @DeleteMapping
@@ -90,6 +98,7 @@ public class PatientController {
             throw new ForbiddenException("You are not authorized to perform this operation.");
         }
         patientService.deletePatientReport(Long.valueOf(patientId));
+        HttpResponseUtil.returnResponse(response, new HttpResponse(HttpStatus.OK, "Successful"));
     }
 
     private boolean checkRole(String userName, String patientId) {
