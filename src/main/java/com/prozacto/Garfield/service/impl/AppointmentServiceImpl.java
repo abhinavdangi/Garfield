@@ -28,9 +28,9 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public List<AppointmentDto> getAppointments() {
+    public List<AppointmentDto> getAppointmentsByDoctor(String doctorEmail) {
         List<AppointmentDto> appointmentDtos = new ArrayList<>();
-        for (Appointment appointment : appointmentRepository.getAppointments()) {
+        for (Appointment appointment : appointmentRepository.getAppointmentsByDoctorEmail(doctorEmail)) {
             appointmentDtos.add(AppointmentDto.getAppointmentDto(appointment));
         }
         return appointmentDtos;

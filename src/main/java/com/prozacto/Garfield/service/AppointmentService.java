@@ -11,7 +11,7 @@ import java.util.List;
 public interface AppointmentService {
     AppointmentDto getAppointment(String appointmentId);
 
-    List<AppointmentDto> getAppointments();
+    List<AppointmentDto> getAppointmentsByDoctor(String doctorEmail);
 
     void requestAppointment(AppointmentRequest appointment) throws AppointmentException;
 

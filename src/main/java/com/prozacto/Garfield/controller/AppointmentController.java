@@ -56,8 +56,9 @@ public class AppointmentController {
     }
 
     @GetMapping
-    public void getAppointments(@RequestHeader(value = "user-name") String userName,
+    public void getAppointmentsByDoctor(@RequestHeader(value = "user-name") String userName,
                                 @RequestHeader(value = "token") String token,
+                                @RequestParam(value = "doctor-email") String doctorEmail,
                                 HttpServletResponse response)
             throws UserServiceException, AuthenticationException, ForbiddenException, IOException {
         authenticationService.checkToken(userName, token);
@@ -67,7 +68,7 @@ public class AppointmentController {
         HttpResponseUtil.returnResponse(response, new HttpResponse(
                 HttpStatus.OK,
                 MapperUtil.getObjectMapper()
-                        .writeValueAsString(appointmentService.getAppointments())));
+                        .writeValueAsString(appointmentService.getAppointmentsByDoctor(doctorEmail))));
     }
 
     @PostMapping

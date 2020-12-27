@@ -37,8 +37,8 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long>,
                 @Param("appointmentDuration") String appointmentDuration
                );
 
-    @Query(value = "SELECT A.appointmentTime from Appointment A where A.doctorEmail = :doctorEmail")
-    List<String> getAppointmentTimes(String doctorEmail);
+    @Query(value = "SELECT A from Appointment A where A.doctorEmail = :doctorEmail")
+    List<Appointment> getAppointmentsByDoctorEmail(String doctorEmail);
 
     @Query(value = "SELECT A from Appointment A")
     List<Appointment> getAppointments();
