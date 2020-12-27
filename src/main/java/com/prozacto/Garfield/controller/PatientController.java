@@ -43,7 +43,7 @@ public class PatientController {
             throws UserServiceException, AuthenticationException, ForbiddenException, IOException,
             FileIOException {
         authenticationService.checkToken(userName, token);
-        if (!checkRole(patientId)) {
+        if (!checkRole(userName, patientId)) {
             throw new ForbiddenException("You are not authorized to perform this operation.");
         }
         patientService.getPatientData(Long.valueOf(patientId), response);
@@ -58,7 +58,7 @@ public class PatientController {
             throws UserServiceException, AuthenticationException, ForbiddenException, IOException,
             FileIOException {
         authenticationService.checkToken(userName, token);
-        if (!checkRole(patientId)) {
+        if (!checkRole(userName, patientId)) {
             throw new ForbiddenException("You are not authorized to perform this operation.");
         }
         patientService.putPatientData(Long.valueOf(patientId), zipFile, response);
@@ -73,7 +73,7 @@ public class PatientController {
             throws UserServiceException, AuthenticationException, ForbiddenException, IOException,
             FileIOException {
         authenticationService.checkToken(userName, token);
-        if (!checkRole(patientId)) {
+        if (!checkRole(userName, patientId)) {
             throw new ForbiddenException("You are not authorized to perform this operation.");
         }
         patientService.putPatientData(Long.valueOf(patientId), zipFile, response);
@@ -86,13 +86,13 @@ public class PatientController {
                                     HttpServletResponse response)
             throws UserServiceException, AuthenticationException, ForbiddenException, IOException {
         authenticationService.checkToken(userName, token);
-        if (!checkRole(patientId)) {
+        if (!checkRole(userName, patientId)) {
             throw new ForbiddenException("You are not authorized to perform this operation.");
         }
         patientService.deletePatientReport(Long.valueOf(patientId));
     }
 
-    private boolean checkRole(String patientId) {
+    private boolean checkRole(String userName, String patientId) {
         return true;
     }
 }

@@ -10,7 +10,6 @@ import javax.servlet.http.HttpServletResponse;
 @Service
 public interface PatientService {
 
-
     void getPatientData(Long patientId, HttpServletResponse response)
             throws IOException, FileIOException;
 
