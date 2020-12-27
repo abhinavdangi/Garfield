@@ -58,7 +58,7 @@ public final class CustomExceptionHandler {
 
     @ExceptionHandler(value = {Exception.class})
     public void generalException(final HttpServletResponse response,
-                                     final Exception e)
+                                 final Exception e)
             throws IOException {
         returnResponse(response,
                        new HttpResponse(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage()));

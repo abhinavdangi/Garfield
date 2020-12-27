@@ -1,6 +1,6 @@
 package com.prozacto.Garfield.exception;
 
-public class UserServiceException extends Exception{
+public class UserServiceException extends Exception {
     public UserServiceException(final String message) {
         super(message);
     }

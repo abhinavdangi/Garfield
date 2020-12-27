@@ -41,9 +41,9 @@ public class AppointmentController {
 
     @GetMapping(value = "/{appointment-id}")
     public void getAppointment(@RequestHeader(value = "user-name") String userName,
-                                         @RequestHeader(value = "token") String token,
-                                         @PathVariable("appointment-id") String appointmentId,
-                                         HttpServletResponse response)
+                               @RequestHeader(value = "token") String token,
+                               @PathVariable("appointment-id") String appointmentId,
+                               HttpServletResponse response)
             throws UserServiceException, AuthenticationException, ForbiddenException, IOException {
         authenticationService.checkToken(userName, token);
         if (!checkRole(userName)) {
@@ -51,13 +51,14 @@ public class AppointmentController {
         }
         HttpResponseUtil.returnResponse(response, new HttpResponse(
                 HttpStatus.OK,
-                MapperUtil.getObjectMapper().writeValueAsString(appointmentService.getAppointment(appointmentId))));
+                MapperUtil.getObjectMapper()
+                        .writeValueAsString(appointmentService.getAppointment(appointmentId))));
     }
 
     @GetMapping
     public void getAppointments(@RequestHeader(value = "user-name") String userName,
-                                               @RequestHeader(value = "token") String token,
-                                               HttpServletResponse response)
+                                @RequestHeader(value = "token") String token,
+                                HttpServletResponse response)
             throws UserServiceException, AuthenticationException, ForbiddenException, IOException {
         authenticationService.checkToken(userName, token);
         if (!checkRole(userName)) {
@@ -65,14 +66,15 @@ public class AppointmentController {
         }
         HttpResponseUtil.returnResponse(response, new HttpResponse(
                 HttpStatus.OK,
-                MapperUtil.getObjectMapper().writeValueAsString(appointmentService.getAppointments())));
+                MapperUtil.getObjectMapper()
+                        .writeValueAsString(appointmentService.getAppointments())));
     }
 
     @PostMapping
     public void requestAppointment(@RequestHeader(value = "user-name") String userName,
-                                  @RequestHeader(value = "token") String token,
-                                  @RequestBody AppointmentRequest appointment,
-                                  HttpServletResponse response)
+                                   @RequestHeader(value = "token") String token,
+                                   @RequestBody AppointmentRequest appointment,
+                                   HttpServletResponse response)
             throws UserServiceException, AuthenticationException, ForbiddenException,
             AppointmentException, IOException {
         authenticationService.checkToken(userName, token);

@@ -22,13 +22,10 @@ import java.util.Base64;
 @Transactional
 public class AuthenticationServiceImpl implements AuthenticationService {
 
+    private static final int SALT_LENGTH = 30;
+    private static Logger LOG = LoggerFactory.getLogger(AuthenticationServiceImpl.class);
     @Value(value = "${token.alive.time.min}")
     private Long TOKEN_ALIVE_TIME_IN_MIN;
-
-    private static final int SALT_LENGTH = 30;
-
-    private static Logger LOG = LoggerFactory.getLogger(AuthenticationServiceImpl.class);
-
     private UserProfileRepository userProfileRepository;
     private AuthenticationUtil authenticationUtil;
 

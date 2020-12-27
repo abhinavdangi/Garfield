@@ -36,7 +36,8 @@ public final class HttpResponseUtil {
         response.getWriter().close();
     }
 
-    public static void addFileToResponse(String fileName, String fileContentType, String fileLocation, HttpServletResponse response)
+    public static void addFileToResponse(String fileName, String fileContentType,
+                                         String fileLocation, HttpServletResponse response)
             throws IOException {
         FileInputStream fileIn = new FileInputStream(fileLocation);
         BufferedInputStream buffer = new BufferedInputStream(fileIn);

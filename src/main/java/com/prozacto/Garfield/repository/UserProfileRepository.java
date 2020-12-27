@@ -1,7 +1,6 @@
 package com.prozacto.Garfield.repository;
 
 import com.prozacto.Garfield.model.UserProfile;
-import org.apache.catalina.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;
@@ -25,7 +24,8 @@ public interface UserProfileRepository extends JpaRepository<UserProfile, Long>,
     @Transactional
     @Modifying
     @Query(value = "UPDATE UserProfile UP set UP.userPassword = :userPassword where UP.userName = :userName")
-    void setUserPassword(@Param("userPassword") String userPassword, @Param("userName") String userName);
+    void setUserPassword(@Param("userPassword") String userPassword,
+                         @Param("userName") String userName);
 
     @Transactional
     @Modifying
@@ -46,6 +46,6 @@ public interface UserProfileRepository extends JpaRepository<UserProfile, Long>,
                 @Param("userName") String userName,
                 @Param("role") String role,
                 @Param("createdOn") String createdOn
-                );
+               );
 }
 

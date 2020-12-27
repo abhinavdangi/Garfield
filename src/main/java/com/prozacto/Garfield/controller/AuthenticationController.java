@@ -35,7 +35,8 @@ public class AuthenticationController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<AuthenticationDetails> userLogin(@RequestBody final LoginCredentials loginCredentials)
+    public ResponseEntity<AuthenticationDetails> userLogin(
+            @RequestBody final LoginCredentials loginCredentials)
             throws AuthenticationException, UserServiceException {
         UserProfileDto userProfile;
         userProfile = authenticationService.authenticate(loginCredentials.getUserName(),
@@ -43,7 +44,9 @@ public class AuthenticationController {
         userProfile = authenticationService.resetSecurityCredentials(
                 loginCredentials.getUserPassword(), userProfile);
         String secureUserToken = authenticationService.issueSecureToken(userProfile);
-        return new ResponseEntity<>(new AuthenticationDetails(secureUserToken, userProfile.getUserName()),HttpStatus.OK);
+        return new ResponseEntity<>(
+                new AuthenticationDetails(secureUserToken, userProfile.getUserName()),
+                HttpStatus.OK);
     }
 
     @PostMapping("/register")

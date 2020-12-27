@@ -17,5 +17,6 @@ public interface AppointmentService {
 
     void updateAppointment(String appointmentId, String status);
 
-    void approveAppointment(String appointmentId, String appointmentTime, String appointmentDuration);
+    void approveAppointment(String appointmentId, String appointmentTime,
+                            String appointmentDuration);
 }

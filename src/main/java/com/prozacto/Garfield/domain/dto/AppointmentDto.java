@@ -15,7 +15,7 @@ public class AppointmentDto {
     private String doctorEmail;
     private String comments;
 
-    public static AppointmentDto getAppointmentDto(Appointment appointment){
+    public static AppointmentDto getAppointmentDto(Appointment appointment) {
         AppointmentDto appointmentDto = new AppointmentDto();
         appointmentDto.setId(String.valueOf(appointment.getId()));
         appointmentDto.setComments(appointment.getComments());

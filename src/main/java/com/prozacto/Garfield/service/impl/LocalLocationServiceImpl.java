@@ -6,7 +6,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
@@ -17,7 +16,8 @@ import java.nio.file.FileSystems;
 public class LocalLocationServiceImpl implements LocationService {
 
     private static final String BASE_PATH =
-            FileSystems.getDefault().getPath("").toAbsolutePath().getParent().toString() + "/prozacto/patient/";
+            FileSystems.getDefault().getPath("").toAbsolutePath().getParent().toString()
+            + "/prozacto/patient/";
     private static final Logger LOG = LoggerFactory.getLogger(LocalLocationServiceImpl.class);
 
     private String getPatientPath(String patientId) {
@@ -56,7 +56,7 @@ public class LocalLocationServiceImpl implements LocationService {
     }
 
     @Override
-    public void deleteData(String patientPathLatest){
+    public void deleteData(String patientPathLatest) {
         FileUtils.deleteQuietly(new File(patientPathLatest));
     }
 

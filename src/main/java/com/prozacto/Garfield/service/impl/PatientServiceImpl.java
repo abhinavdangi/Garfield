@@ -4,7 +4,6 @@ import com.prozacto.Garfield.exception.FileIOException;
 import com.prozacto.Garfield.service.LocationService;
 import com.prozacto.Garfield.service.PatientService;
 import com.prozacto.Garfield.utils.HttpResponseUtil;
-import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -25,6 +24,17 @@ public class PatientServiceImpl implements PatientService {
         this.locationService = locationService;
     }
 
+    private static boolean isZipFile(File f) {
+        int fileSignature = 0;
+        try (RandomAccessFile raf = new RandomAccessFile(f, "r")) {
+            fileSignature = raf.readInt();
+        } catch (IOException e) {
+
+        }
+        return fileSignature == 0x504B0304 || fileSignature == 0x504B0506
+               || fileSignature == 0x504B0708;
+    }
+
     @Override
     public void getPatientData(final Long patientId, HttpServletResponse response)
             throws IOException, FileIOException {
@@ -42,9 +52,9 @@ public class PatientServiceImpl implements PatientService {
     public void putPatientData(Long patientId, MultipartFile zipFile, HttpServletResponse response)
             throws IOException, FileIOException {
         String patientIdString = patientId.toString();
-        File file = new File(System.getProperty("java.io.tmpdir")+"/temp");
+        File file = new File(System.getProperty("java.io.tmpdir") + "/temp");
         zipFile.transferTo(file);
-        if(isZipFile(file)) {
+        if (isZipFile(file)) {
             locationService.copyData(locationService.getPatientPathLatest(patientIdString),
                                      locationService.getPatientPathOld(patientIdString));
             locationService.putData(locationService.getPatientPathLatest(patientIdString), file);
@@ -60,15 +70,5 @@ public class PatientServiceImpl implements PatientService {
         locationService.copyData(locationService.getPatientPathLatest(patientIdString),
                                  locationService.getPatientPathOld(patientIdString));
         locationService.deleteData(locationService.getPatientPathLatest(patientIdString));
-    }
-
-    private static boolean isZipFile(File f) {
-        int fileSignature = 0;
-        try (RandomAccessFile raf = new RandomAccessFile(f, "r")) {
-            fileSignature = raf.readInt();
-        } catch (IOException e) {
-
-        }
-        return fileSignature == 0x504B0304 || fileSignature == 0x504B0506 || fileSignature == 0x504B0708;
     }
 }
