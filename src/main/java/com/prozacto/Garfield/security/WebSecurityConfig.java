@@ -49,10 +49,16 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http.csrf().disable().authorizeRequests()
                 .antMatchers("/auth/**").permitAll()
                 .antMatchers("/").permitAll()
+                .antMatchers("/swagger-ui**").permitAll()
+                .antMatchers("/swagger-resources/**").permitAll()
+                .antMatchers("/csrf/**").permitAll()
+                .antMatchers("/webjars/**").permitAll()
+                .antMatchers("/v2/**").permitAll()
                 .antMatchers("/health/**").hasAuthority("ADMIN")
                 .antMatchers("/patient/**").hasAnyAuthority("DOCTOR", "PATIENT", "ASSISTANT")
                 .antMatchers("/appointments/**").hasAnyAuthority("DOCTOR", "ASSISTANT")
-                .anyRequest().authenticated().and()
+                .anyRequest().authenticated()
+                .and()
                 .exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint).and().sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
