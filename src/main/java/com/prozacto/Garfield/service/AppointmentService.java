@@ -9,6 +9,7 @@ import java.util.List;
 
 @Service
 public interface AppointmentService {
+
     AppointmentDto getAppointment(String appointmentId);
 
     List<AppointmentDto> getAppointmentsByDoctor(String doctorEmail);

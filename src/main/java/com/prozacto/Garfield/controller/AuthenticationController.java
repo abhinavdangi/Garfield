@@ -1,23 +1,26 @@
 package com.prozacto.Garfield.controller;
 
-import com.prozacto.Garfield.domain.AuthenticationDetails;
-import com.prozacto.Garfield.domain.LoginCredentials;
+import com.prozacto.Garfield.domain.JwtResponse;
 import com.prozacto.Garfield.domain.UserRegistration;
-import com.prozacto.Garfield.domain.dto.UserProfileDto;
-import com.prozacto.Garfield.exception.AuthenticationException;
-import com.prozacto.Garfield.exception.UserServiceException;
+import com.prozacto.Garfield.domain.JwtRequest;
 import com.prozacto.Garfield.service.AuthenticationService;
+import com.prozacto.Garfield.service.impl.UserProfileServiceImpl;
+import com.prozacto.Garfield.utils.JwtTokenUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -29,38 +32,45 @@ public class AuthenticationController {
     final private AuthenticationService authenticationService;
 
     @Autowired
+    private JwtTokenUtil jwtTokenUtil;
+
+    @Autowired
+    private AuthenticationManager authenticationManager;
+
+    @Autowired
+    private UserProfileServiceImpl userProfileService;
+
+    @Autowired
     public AuthenticationController(
             @Qualifier("authenticationService") AuthenticationService authenticationService) {
         this.authenticationService = authenticationService;
     }
 
-    @PostMapping("/login")
-    public ResponseEntity<AuthenticationDetails> userLogin(
-            @RequestBody final LoginCredentials loginCredentials)
-            throws AuthenticationException, UserServiceException {
-        UserProfileDto userProfile;
-        userProfile = authenticationService.authenticate(loginCredentials.getUserName(),
-                                                         loginCredentials.getUserPassword());
-        userProfile = authenticationService.resetSecurityCredentials(
-                loginCredentials.getUserPassword(), userProfile);
-        String secureUserToken = authenticationService.issueSecureToken(userProfile);
-        return new ResponseEntity<>(
-                new AuthenticationDetails(secureUserToken, userProfile.getUserName()),
-                HttpStatus.OK);
-    }
-
-    @PostMapping("/register")
-    public ResponseEntity<String> register(@RequestBody final UserRegistration userRegistration)
-            throws UserServiceException {
+    @GetMapping("/register")
+    public ResponseEntity<String> register(@RequestBody final UserRegistration userRegistration) {
         authenticationService.register(userRegistration);
         return new ResponseEntity<>("Successful", HttpStatus.OK);
     }
 
-    @GetMapping("/checkToken")
-    public ResponseEntity<String> checkAuth(@RequestParam(value = "userName") String userName,
-                                            @RequestParam(value = "token") String token)
-            throws UserServiceException, AuthenticationException {
-        authenticationService.checkToken(userName, token);
-        return new ResponseEntity<>("Successful", HttpStatus.OK);
+    @PostMapping("/login")
+    public ResponseEntity<?> createAuthenticationToken(@RequestBody JwtRequest authenticationRequest) throws Exception {
+
+        authenticate(authenticationRequest.getUsername(), authenticationRequest.getPassword());
+
+        final UserDetails userDetails = userProfileService.loadUserByUsername(authenticationRequest.getUsername());
+
+        final String token = jwtTokenUtil.generateToken(userDetails);
+
+        return ResponseEntity.ok(new JwtResponse(token));
+    }
+
+    private void authenticate(String username, String password) throws Exception {
+        try {
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
+        } catch (DisabledException e) {
+            throw new Exception("USER_DISABLED", e);
+        } catch (BadCredentialsException e) {
+            throw new Exception("INVALID_CREDENTIALS", e);
+        }
     }
 }
