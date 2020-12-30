@@ -2,13 +2,11 @@ package com.prozacto.Garfield.controller;
 
 import com.prozacto.Garfield.domain.HttpResponse;
 import com.prozacto.Garfield.domain.request.AppointmentRequest;
-import com.prozacto.Garfield.exception.AppointmentException;
 import com.prozacto.Garfield.service.AppointmentService;
 import com.prozacto.Garfield.utils.HttpResponseUtil;
 import com.prozacto.Garfield.utils.MapperUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -53,7 +51,7 @@ public class AppointmentController {
     @PostMapping
     public void requestAppointment(@RequestBody AppointmentRequest appointment,
                                    HttpServletResponse response)
-            throws AppointmentException, IOException {
+            throws IOException {
         appointmentService.requestAppointment(appointment);
         HttpResponseUtil.returnResponse(response, new HttpResponse(HttpStatus.OK, "Successful"));
     }

@@ -2,5 +2,4 @@
     UserProfile model class and Insert query
 2. Approval flow not in place for registering as a doctor.
 3. User Table to be separate from Auth Table.
-4. Use JWT Authentication of spring boot.
-5. Add validation for appointment approval process - time check, duration check based on doctor's availability
+4. Add validation for appointment approval process - time check, duration check based on doctor's availability
