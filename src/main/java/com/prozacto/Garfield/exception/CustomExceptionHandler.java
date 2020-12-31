@@ -24,6 +24,14 @@ public final class CustomExceptionHandler {
                        new HttpResponse(HttpStatus.BAD_REQUEST, e.getMessage()));
     }
 
+    @ExceptionHandler(value = {AppointmentException.class})
+    public void appointmentException(final HttpServletResponse response,
+                                     final AppointmentException e)
+            throws IOException {
+        returnResponse(response,
+                       new HttpResponse(HttpStatus.BAD_REQUEST, e.getMessage()));
+    }
+
     @ExceptionHandler(value = {Exception.class})
     public void generalException(final HttpServletResponse response,
                                  final Exception e)

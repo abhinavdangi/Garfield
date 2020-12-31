@@ -23,19 +23,13 @@ public class UserProfile implements Serializable {
 
     @Id
     @GeneratedValue
-    private long id;
+    private int id;
 
     @Column(name = "first_name")
     private String firstName;
 
     @Column(name = "last_name")
     private String lastName;
-
-    @Column(name = "salt")
-    private String salt;
-
-    @Column(name = "token")
-    private String token;
 
     @Column(name = "user_password")
     private String userPassword;
@@ -48,5 +42,8 @@ public class UserProfile implements Serializable {
 
     @Column(name = "created_on")
     private String createdOn;
+
+    @Column(name = "user_email")
+    private String userEmail;
 
 }

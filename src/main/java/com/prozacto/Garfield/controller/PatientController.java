@@ -34,7 +34,7 @@ public class PatientController {
     public void getPatientReport(@PathVariable("patient-id") String patientId,
                                  HttpServletResponse response)
             throws IOException, FileIOException {
-        patientService.getPatientData(Long.valueOf(patientId), response);
+        patientService.getPatientData(Integer.valueOf(patientId), response);
     }
 
     @PostMapping
@@ -42,7 +42,7 @@ public class PatientController {
                                     @RequestParam(value = "file") MultipartFile zipFile,
                                     HttpServletResponse response)
             throws IOException, FileIOException {
-        patientService.putPatientData(Long.valueOf(patientId), zipFile, response);
+        patientService.putPatientData(Integer.valueOf(patientId), zipFile, response);
         HttpResponseUtil
                 .returnResponse(response, new HttpResponse(HttpStatus.OK, "Successful"));
 
@@ -53,7 +53,7 @@ public class PatientController {
                                     @RequestParam(value = "file") MultipartFile zipFile,
                                     HttpServletResponse response)
             throws IOException, FileIOException {
-        patientService.putPatientData(Long.valueOf(patientId), zipFile, response);
+        patientService.putPatientData(Integer.valueOf(patientId), zipFile, response);
         HttpResponseUtil.returnResponse(response, new HttpResponse(HttpStatus.OK, "Successful"));
 
     }
@@ -62,7 +62,7 @@ public class PatientController {
     public void revokePatientReport(@PathVariable(value = "patient-id") String patientId,
                                     HttpServletResponse response)
             throws IOException {
-        patientService.deletePatientReport(Long.valueOf(patientId));
+        patientService.deletePatientReport(Integer.valueOf(patientId));
         HttpResponseUtil.returnResponse(response, new HttpResponse(HttpStatus.OK, "Successful"));
     }
 

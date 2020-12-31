@@ -10,11 +10,13 @@ import javax.servlet.http.HttpServletResponse;
 @Service
 public interface PatientService {
 
-    void getPatientData(Long patientId, HttpServletResponse response)
+    void getPatientData(Integer patientId, HttpServletResponse response)
             throws IOException, FileIOException;
 
-    void putPatientData(Long patientId, MultipartFile zipFile, HttpServletResponse response)
+    void putPatientData(Integer patientId, MultipartFile zipFile, HttpServletResponse response)
             throws IOException, FileIOException;
 
-    void deletePatientReport(Long patientId) throws IOException;
+    void deletePatientReport(Integer patientId) throws IOException;
+
+    Boolean checkPatientReport(Integer patientId);
 }

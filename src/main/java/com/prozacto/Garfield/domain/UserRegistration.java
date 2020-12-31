@@ -11,4 +11,5 @@ public class UserRegistration {
     private String userPassword;
     private String userName;
     private Role role;
+    private String userEmail;
 }

@@ -2,6 +2,7 @@ package com.prozacto.Garfield.controller;
 
 import com.prozacto.Garfield.domain.HttpResponse;
 import com.prozacto.Garfield.domain.request.AppointmentRequest;
+import com.prozacto.Garfield.exception.AppointmentException;
 import com.prozacto.Garfield.service.AppointmentService;
 import com.prozacto.Garfield.utils.HttpResponseUtil;
 import com.prozacto.Garfield.utils.MapperUtil;
@@ -41,7 +42,8 @@ public class AppointmentController {
 
     @GetMapping
     public void getAppointmentsByDoctor(@RequestParam(value = "doctor-email") String doctorEmail,
-                                        HttpServletResponse response) throws IOException {
+                                        HttpServletResponse response)
+            throws IOException, AppointmentException {
         HttpResponseUtil.returnResponse(response, new HttpResponse(
                 HttpStatus.OK,
                 MapperUtil.getObjectMapper()
@@ -51,7 +53,7 @@ public class AppointmentController {
     @PostMapping
     public void requestAppointment(@RequestBody AppointmentRequest appointment,
                                    HttpServletResponse response)
-            throws IOException {
+            throws IOException, AppointmentException {
         appointmentService.requestAppointment(appointment);
         HttpResponseUtil.returnResponse(response, new HttpResponse(HttpStatus.OK, "Successful"));
     }
@@ -69,8 +71,9 @@ public class AppointmentController {
                                    @RequestParam(value = "appointment-time") String appointmentTime,
                                    @RequestParam(value = "appointment-duration") String appointmentDuration,
                                    HttpServletResponse response)
-            throws IOException {
-        appointmentService.approveAppointment(appointmentId, appointmentTime, appointmentDuration);
+            throws IOException, AppointmentException {
+        appointmentService.approveAppointment(Integer.valueOf(appointmentId), Long.valueOf(appointmentTime),
+                                              Long.valueOf(appointmentDuration));
         HttpResponseUtil.returnResponse(response, new HttpResponse(HttpStatus.OK, "Successful"));
     }
 }

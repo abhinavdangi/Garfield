@@ -23,13 +23,13 @@ public class Appointment implements Serializable {
 
     @Id
     @GeneratedValue
-    private long id;
+    private int id;
 
-    @Column(name = "patient_email")
-    private String patientEmail;
+    @Column(name = "patient_id")
+    private int patientId;
 
-    @Column(name = "doctor_email")
-    private String doctorEmail;
+    @Column(name = "doctor_id")
+    private int doctorId;
 
     @Column(name = "creation_time")
     private String creationTime;
@@ -41,8 +41,8 @@ public class Appointment implements Serializable {
     private String comments;
 
     @Column(name = "appointment_time")
-    private String appointmentTime;
+    private Long appointmentTime;
 
     @Column(name = "appointment_duration")
-    private String appointmentDuration;
+    private Long appointmentDuration;
 }

@@ -36,7 +36,7 @@ public class PatientServiceImpl implements PatientService {
     }
 
     @Override
-    public void getPatientData(final Long patientId, HttpServletResponse response)
+    public void getPatientData(final Integer patientId, HttpServletResponse response)
             throws IOException, FileIOException {
         String patientIdString = patientId.toString();
         String localPath = locationService.getPatientPathLatest(patientIdString);
@@ -49,7 +49,7 @@ public class PatientServiceImpl implements PatientService {
     }
 
     @Override
-    public void putPatientData(Long patientId, MultipartFile zipFile, HttpServletResponse response)
+    public void putPatientData(Integer patientId, MultipartFile zipFile, HttpServletResponse response)
             throws IOException, FileIOException {
         String patientIdString = patientId.toString();
         File file = new File(System.getProperty("java.io.tmpdir") + "/temp");
@@ -65,10 +65,17 @@ public class PatientServiceImpl implements PatientService {
     }
 
     @Override
-    public void deletePatientReport(Long patientId) throws IOException {
+    public void deletePatientReport(Integer patientId) throws IOException {
         String patientIdString = patientId.toString();
         locationService.copyData(locationService.getPatientPathLatest(patientIdString),
                                  locationService.getPatientPathOld(patientIdString));
         locationService.deleteData(locationService.getPatientPathLatest(patientIdString));
+    }
+
+    @Override
+    public Boolean checkPatientReport(Integer patientId) {
+        String patientIdString = patientId.toString();
+        String localPath = locationService.getPatientPathLatest(patientIdString);
+        return (new File(localPath)).exists();
     }
 }

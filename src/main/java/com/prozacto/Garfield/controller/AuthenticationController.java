@@ -51,7 +51,7 @@ public class AuthenticationController {
         this.authenticationService = authenticationService;
     }
 
-    @GetMapping("/register")
+    @PostMapping("/register")
     public ResponseEntity<String> register(@RequestBody final UserRegistration userRegistration) {
         authenticationService.register(userRegistration);
         return new ResponseEntity<>("Successful", HttpStatus.OK);

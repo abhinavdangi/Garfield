@@ -12,33 +12,31 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Repository
-public interface AppointmentRepository extends JpaRepository<Appointment, Long>,
+public interface AppointmentRepository extends JpaRepository<Appointment, Integer>,
         JpaSpecificationExecutor<Appointment> {
 
     @Query(value = "SELECT A from Appointment A where A.id = :id")
-    Appointment getAppointment(@Param("id") Long id);
+    Appointment getAppointment(@Param("id") int id);
 
     @Transactional
     @Modifying
     @Query(value = "UPDATE Appointment A set A.status = :status where A.id = :id")
-    void setStatus(@Param("status") String status, @Param("id") Long id);
+    void setStatus(@Param("status") String status, @Param("id") int id);
 
     @Transactional
     @Modifying
     @Query(nativeQuery = true, value = "INSERT INTO appointment "
-                                       + "(patient_email, doctor_email, creation_time, status, comments, appointment_time, appointment_duration)"
-                                       + " VALUES ( :patientEmail, :doctorEmail, :creationTime, :status, :comments, :appointmentTime, :appointmentDuration)")
-    void insert(@Param("patientEmail") String patientEmail,
-                @Param("doctorEmail") String doctorEmail,
+                                       + "(patient_id, doctor_id, creation_time, status, comments)"
+                                       + " VALUES ( :patientId, :doctorId, :creationTime, :status, :comments)")
+    void insert(@Param("patientId") int patientId,
+                @Param("doctorId") int doctorId,
                 @Param("creationTime") String creationTime,
                 @Param("status") String status,
-                @Param("comments") String comments,
-                @Param("appointmentTime") String appointmentTime,
-                @Param("appointmentDuration") String appointmentDuration
+                @Param("comments") String comments
                );
 
-    @Query(value = "SELECT A from Appointment A where A.doctorEmail = :doctorEmail")
-    List<Appointment> getAppointmentsByDoctorEmail(String doctorEmail);
+    @Query(value = "SELECT A from Appointment A where A.doctorId = :doctorId")
+    List<Appointment> getAppointmentsByDoctorId(int doctorId);
 
     @Query(value = "SELECT A from Appointment A")
     List<Appointment> getAppointments();
@@ -50,8 +48,8 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long>,
                    + "A.appointmentDuration = :appointmentDuration,"
                    + "A.status = 'SCHEDULED' "
                    + "where A.id = :id")
-    void setAppointment(@Param("id") Long id,
-                        @Param("appointmentTime") String appointmentTime,
-                        @Param("appointmentDuration") String appointmentDuration);
+    void setAppointment(@Param("id") int id,
+                        @Param("appointmentTime") Long appointmentTime,
+                        @Param("appointmentDuration") Long appointmentDuration);
 }
 

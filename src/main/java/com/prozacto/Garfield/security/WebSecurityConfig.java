@@ -56,7 +56,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/v2/**").permitAll()
                 .antMatchers("/health/**").hasAuthority("ADMIN")
                 .antMatchers("/patient/**").hasAnyAuthority("DOCTOR", "PATIENT", "ASSISTANT")
-                .antMatchers("/appointments/**").hasAnyAuthority("DOCTOR", "ASSISTANT")
+                .antMatchers("/appointments/**").hasAnyAuthority("DOCTOR", "ASSISTANT", "PATIENT")
                 .anyRequest().authenticated()
                 .and()
                 .exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint).and().sessionManagement()

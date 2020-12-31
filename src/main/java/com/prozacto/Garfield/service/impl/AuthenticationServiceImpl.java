@@ -25,11 +25,11 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         String secureUserPassword = bCryptPasswordEncoder.encode(userRegistration.getUserPassword());
         userProfileRepository.insert(userRegistration.getFirstName(),
                                      userRegistration.getLastName(),
-                                     "",
                                      secureUserPassword,
                                      userRegistration.getUserName(),
                                      userRegistration.getRole().name().toUpperCase(),
-                                     String.valueOf(System.currentTimeMillis()));
+                                     String.valueOf(System.currentTimeMillis()),
+                                     userRegistration.getUserEmail());
     }
 
 }
